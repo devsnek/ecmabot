@@ -1,12 +1,10 @@
-'use strict';
-
-const { Module, Script, createContext } = require('vm');
-const util = require('util');
+import vm from 'vm';
+import util from 'util';
 
 const TIMEOUT = 1000;
 
 function makeContext() {
-  const context = createContext(Object.create(null), {
+  const context = vm.createContext(Object.create(null), {
     allowCodeGenerationFromStrings: false,
     origin: 'vm://ecmabot',
   });
@@ -14,7 +12,7 @@ function makeContext() {
 }
 
 async function asModuleWeirdName(code, id, context) {
-  const m = new Module(code, {
+  const m = new vm.Module(code, {
     url: `vm://ecmabot/${id}.js`,
     context,
   });
@@ -27,7 +25,7 @@ async function asModuleWeirdName(code, id, context) {
 }
 
 function asScriptWeirdName(code, id, context) {
-  const s = new Script(code, {
+  const s = new vm.Script(code, {
     displayErrors: true,
     filename: `/ecmabot/${id}.js`,
   });
@@ -51,7 +49,7 @@ async function runCode(code, context = makeContext(), module = false) {
   }
 }
 
-class EvilManager {
+export default class EvilManager {
   constructor() {
     this.sessions = new WeakMap();
   }
@@ -75,5 +73,3 @@ class EvilManager {
     return runCode(code, session.context, session.type === 'module');
   }
 }
-
-module.exports = EvilManager;

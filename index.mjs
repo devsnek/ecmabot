@@ -1,8 +1,6 @@
-'use strict';
-
-const Discord = require('discord.js');
-const EvilManager = require('./evil');
-const config = require('./config');
+import Discord from 'discord.js';
+import EvilManager from './evil';
+import config from './config';
 
 const client = new Discord.Client();
 const evil = new EvilManager();
