@@ -46,6 +46,7 @@ client.on('message', async (message) => {
 });
 
 client.on('error', (err) => {
+  // eslint-disable-next-line no-console
   console.log('CLIENT ERROR', err);
 });
 
