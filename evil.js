@@ -53,7 +53,7 @@ async function runCode(code, context = makeContext(), module = false) {
 
 class EvilManager {
   constructor() {
-    this.sessions = new Map();
+    this.sessions = new WeakMap();
   }
 
   createSession(key, type = 'script') {
