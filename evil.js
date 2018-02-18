@@ -37,15 +37,43 @@ function asScript(code, id, context) {
   return result;
 }
 
-async function evil(code, id = Math.random().toString().slice(3)) {
+async function runCodeWeirdName(code, context = makeContext(), module = false) {
   try {
-    const m = Module ? asModule : asScript;
-    const context = makeContext();
-    const result = await m(code, id, context);
+    const m = module ? asModule : asScript;
+    const result = await m(code, 'code', context);
     return util.inspect(result);
   } catch (err) {
-    return err.stack.split('at evil (')[0].trim();
+    try {
+      return err.stack.split('at runCodeWeirdName')[0].trim();
+    } catch (e) {
+      return 'Error: fuckery happened';
+    }
   }
 }
 
-module.exports = evil;
+class EvilManager {
+  constructor() {
+    this.sessions = new Map();
+  }
+
+  createSession(key, type = 'script') {
+    if (this.sessions.has(key))
+      return false;
+    this.sessions.set(key, {
+      context: makeContext(),
+      type,
+    });
+    return true;
+  }
+
+  endSession(key) {
+    return this.sessions.delete(key);
+  }
+
+  evil(code, sessionKey) {
+    const session = this.sessions.get(sessionKey) || {};
+    return runCodeWeirdName(code, session.context, session.type === 'module');
+  }
+}
+
+module.exports = EvilManager;
