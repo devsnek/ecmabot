@@ -13,7 +13,7 @@ function makeContext() {
   return context;
 }
 
-async function asModule(code, id, context) {
+async function asModuleWeirdName(code, id, context) {
   const m = new Module(code, {
     url: `vm://ecmabot/${id}.js`,
     context,
@@ -26,7 +26,7 @@ async function asModule(code, id, context) {
   return { result };
 }
 
-function asScript(code, id, context) {
+function asScriptWeirdName(code, id, context) {
   const s = new Script(code, {
     displayErrors: true,
     filename: `/ecmabot/${id}.js`,
@@ -37,14 +37,14 @@ function asScript(code, id, context) {
   return { result };
 }
 
-async function runCodeWeirdName(code, context = makeContext(), module = false) {
+async function runCode(code, context = makeContext(), module = false) {
   try {
-    const m = module ? asModule : asScript;
+    const m = module ? asModuleWeirdName : asScriptWeirdName;
     const { result } = await m(code, 'code', context);
     return util.inspect(result);
   } catch (err) {
     try {
-      return err.stack.split('at runCodeWeirdName')[0].trim();
+      return err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
     } catch (e) {
       return 'Error: fuckery happened';
     }
@@ -72,7 +72,7 @@ class EvilManager {
 
   evil(code, sessionKey) {
     const session = this.sessions.get(sessionKey) || {};
-    return runCodeWeirdName(code, session.context, session.type === 'module');
+    return runCode(code, session.context, session.type === 'module');
   }
 }
 
