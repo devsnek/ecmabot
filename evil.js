@@ -23,7 +23,7 @@ async function asModule(code, id, context) {
   await m.link(() => 0);
   m.instantiate();
   const { result } = await m.evaluate({ timeout: TIMEOUT });
-  return result;
+  return { result };
 }
 
 function asScript(code, id, context) {
@@ -34,13 +34,13 @@ function asScript(code, id, context) {
   const result = s.runInContext(context, {
     timeout: TIMEOUT,
   });
-  return result;
+  return { result };
 }
 
 async function runCodeWeirdName(code, context = makeContext(), module = false) {
   try {
     const m = module ? asModule : asScript;
-    const result = await m(code, 'code', context);
+    const { result } = await m(code, 'code', context);
     return util.inspect(result);
   } catch (err) {
     try {
