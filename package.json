@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.mjs",
   "dependencies": {
-    "discord.js": "^11.3.0"
+    "discord.js": "^11.3.0",
+    "snekgist": "^1.0.0"
   },
   "scripts": {
     "start": "node-dev --experimental-vm-modules --experimental-modules --harmony_import_meta index.mjs"
