@@ -5,6 +5,7 @@
   "main": "index.mjs",
   "dependencies": {
     "discord.js": "^11.3.0",
+    "snekfetch": "^3.6.4",
     "snekgist": "^1.0.0"
   },
   "scripts": {
