@@ -30,7 +30,7 @@ client.on('message', async (message) => {
   if (cblockre.test(content))
     content = content.replace(cblockre, '').trim();
 
-  const out = await evil(content);
+  const out = await evil(content, config.admins.includes(message.author.id));
   send(message.channel, out);
 });
 

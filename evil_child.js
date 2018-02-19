@@ -1,3 +1,5 @@
+'use strict';
+
 const { createContext, Script } = require('vm');
 const util = require('util');
 
@@ -6,26 +8,27 @@ const TIMEOUT = 1000;
 function makeContext() {
   const context = createContext(Object.create(null), {
     allowCodeGenerationFromStrings: false,
-    origin: 'vm://ecmabot',
+    origin: 'vm://',
   });
   return context;
 }
 
-function asScriptWeirdName(code, id, context) {
+function asScriptWeirdName(code, context) {
   const s = new Script(code, {
     displayErrors: true,
-    filename: `/ecmabot/${id}.js`,
+    filename: 'code.js',
   });
-  const result = s.runInContext(context, {
-    timeout: TIMEOUT,
-  });
+  const opt = { timeout: TIMEOUT };
+  const result = context ?
+    s.runInContext(context, opt) :
+    s.runInThisContext(opt);
   return { result };
 }
 
-async function runCode(code) {
+async function runCode(code, admin) {
   try {
-    const context = makeContext();
-    const { result } = await asScriptWeirdName(code, 'code', context);
+    const context = admin ? false : makeContext();
+    const { result } = await asScriptWeirdName(code, context);
     return util.inspect(result, {
       maxArrayLength: 20,
       customInspect: false,
@@ -40,6 +43,6 @@ async function runCode(code) {
   }
 }
 
-runCode(process.argv[2], process.argv[3]).then((out) => {
+runCode(process.argv[2], JSON.parse(process.argv[3])).then((out) => {
   process.send(out);
 });
