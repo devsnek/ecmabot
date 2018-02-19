@@ -8,16 +8,16 @@ const client = new Discord.Client();
 
 const cblockre = /(^```js)|(```$)/g;
 
-async function send(channel, content) {
+async function respond(message, content) {
   if (content.length > 1985) {
     const { html_url } = await gist({ 'out.js': { content } });
     const location = await request
       .post('https://git.io')
       .attach('url', html_url)
       .then((r) => r.headers.location);
-    return channel.send(`**Output was too long and was uploaded to ${location}**`);
+    return message.reply(`**Output was too long and was uploaded to ${location}**`);
   } else {
-    return channel.send(content, { code: 'js' });
+    return message.reply(content, { code: 'js' });
   }
 }
 
@@ -31,7 +31,7 @@ client.on('message', async (message) => {
     content = content.replace(cblockre, '').trim();
 
   const out = await evil(content, config.admins.includes(message.author.id));
-  send(message.channel, out);
+  respond(message, out);
 });
 
 client.on('error', (err) => {
