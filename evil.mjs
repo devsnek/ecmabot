@@ -2,7 +2,9 @@ import childProcess from 'child_process';
 
 export default function evil(code, admin) {
   return new Promise((resolve, reject) => {
-    const child = childProcess.fork('./evil_child.js', [code, admin]);
+    const child = childProcess.fork('./evil_child.js', [code, admin], {
+      silent: true,
+    });
     let res = '';
     child.once('exit', () => {
       resolve(res);
