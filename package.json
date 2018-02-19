@@ -1,0 +1,22 @@
+{
+  "name": "ecmabot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "dependencies": {
+    "discord.js": "^11.3.0"
+  },
+  "scripts": {
+    "start": "node-dev --experimental-vm-modules --experimental-modules --harmony_import_meta index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devsnek/ecmabot.git"
+  },
+  "author": "snek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devsnek/ecmabot/issues"
+  },
+  "homepage": "https://github.com/devsnek/ecmabot#readme"
+}
