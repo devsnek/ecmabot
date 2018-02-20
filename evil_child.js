@@ -3,8 +3,6 @@
 const { createContext, Script } = require('vm');
 const util = require('util');
 
-const TIMEOUT = 1000;
-
 function makeContext() {
   const context = createContext(Object.create(null), {
     allowCodeGenerationFromStrings: false,
@@ -13,22 +11,22 @@ function makeContext() {
   return context;
 }
 
-function asScriptWeirdName(code, context) {
+function asScriptWeirdName(code, timeout, context) {
   const s = new Script(code, {
     displayErrors: true,
     filename: 'code.js',
   });
-  const opt = { timeout: TIMEOUT };
+  const opt = { timeout };
   const result = context ?
     s.runInContext(context, opt) :
     s.runInThisContext(opt);
   return { result };
 }
 
-async function runCode(code, admin) {
+async function runCode(code, timeout, admin) {
   try {
     const context = admin ? false : makeContext();
-    const { result } = await asScriptWeirdName(code, context);
+    const { result } = await asScriptWeirdName(code, timeout, context);
     return util.inspect(result, {
       maxArrayLength: 20,
       customInspect: false,
@@ -43,6 +41,8 @@ async function runCode(code, admin) {
   }
 }
 
-runCode(process.argv[2], JSON.parse(process.argv[3])).then((out) => {
+const [code, timeout, admin] = process.argv.slice(2);
+
+runCode(code, parseInt(timeout), JSON.parse(admin)).then((out) => {
   process.send(out);
 });

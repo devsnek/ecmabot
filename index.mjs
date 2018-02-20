@@ -12,9 +12,9 @@ async function respond(message, content) {
     const key = await request.post('https://hastebin.com/documents')
       .send(content)
       .then((r) => r.body.key);
-    return message.reply(`**Output was too long and was uploaded to https://hastebin.com/${key}.js**`);
+    await message.reply(`**Output was too long and was uploaded to https://hastebin.com/${key}.js**`);
   } else {
-    return message.reply(content, { code: 'js' });
+    await message.reply(content, { code: 'js' });
   }
 }
 
@@ -26,9 +26,12 @@ client.on('message', async (message) => {
 
   if (cblockre.test(content))
     content = content.replace(cblockre, '').trim();
-
-  const out = await evil(content, config.admins.includes(message.author.id));
-  respond(message, out);
+  try {
+    const out = await evil(content, config.admins.includes(message.author.id));
+    await respond(message, out);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 client.on('error', (err) => {
