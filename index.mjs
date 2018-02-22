@@ -28,7 +28,7 @@ async function respond(message, content) {
     await message.reply(`**Output was too long and was uploaded to https://hastebin.com/${key}.js**`);
     console.log('hastebin', `https://hastebin.org/${key}.js`);
   } else {
-    await message.reply(wrapped);
+    await message.channel.send(wrapped);
     console.log(content);
   }
   header(message);
