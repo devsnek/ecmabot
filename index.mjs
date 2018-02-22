@@ -4,6 +4,7 @@ import Discord from 'discord.js';
 import evil from './evil';
 import config from './config';
 import request from 'snekfetch';
+import cardinal from 'cardinal';
 
 const client = new Discord.Client();
 
@@ -29,7 +30,7 @@ async function respond(message, content) {
     console.log('hastebin', `https://hastebin.org/${key}.js`);
   } else {
     await message.channel.send(wrapped);
-    console.log(content);
+    console.log(cardinal.highlight(content));
   }
   header(message);
 }
@@ -43,7 +44,7 @@ client.on('message', async (message) => {
   if (cblockre.test(content))
     content = content.replace(cblockre, '').trim();
 
-  header(message, content);
+  header(message, cardinal.highlight(content));
 
   try {
     const out = await evil(content, config.admins.includes(message.author.id));

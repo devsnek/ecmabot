@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.mjs",
   "dependencies": {
+    "cardinal": "^1.0.0",
     "discord.js": "^11.3.0",
     "snekfetch": "^3.6.4"
   },
