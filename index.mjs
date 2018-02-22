@@ -8,7 +8,7 @@ const client = new Discord.Client();
 const cblockre = /(^```js)|(```$)/g;
 
 async function respond(message, content) {
-  if (content.length > 1985) {
+  if (content.length > 1960) {
     const key = await request.post('https://hastebin.com/documents')
       .send(content)
       .then((r) => r.body.key);
