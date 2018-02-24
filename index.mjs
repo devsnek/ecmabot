@@ -19,6 +19,14 @@ const header = (m, x) => {
   }
 };
 
+const highlight = (t) => {
+  try {
+    return cardinal.highlight(t);
+  } catch (err) {
+    return t;
+  }
+};
+
 async function respond(message, content) {
   header(message);
   const wrapped = `${message.author},\n\`\`\`js\n${content}\n\`\`\``;
@@ -30,7 +38,7 @@ async function respond(message, content) {
     console.log('hastebin', `https://hastebin.org/${key}.js`);
   } else {
     await message.channel.send(wrapped);
-    console.log(cardinal.highlight(content));
+    console.log(highlight(content));
   }
   header(message);
 }
@@ -44,7 +52,7 @@ client.on('message', async (message) => {
   if (cblockre.test(content))
     content = content.replace(cblockre, '').trim();
 
-  header(message, cardinal.highlight(content));
+  header(message, highlight(content));
 
   try {
     const out = await evil(content, config.admins.includes(message.author.id));
