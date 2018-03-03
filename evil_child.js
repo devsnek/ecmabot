@@ -2,6 +2,7 @@
 
 const { createContext, Script } = require('vm');
 const util = require('util');
+const { performance } = require('perf_hooks');
 
 function makeContext() {
   const context = createContext(Object.create(null), {
@@ -17,27 +18,31 @@ function asScriptWeirdName(code, timeout, context) {
     filename: 'code.js',
   });
   const opt = { timeout };
+  const start = performance.now();
   const result = context ?
     s.runInContext(context, opt) :
     s.runInThisContext(opt);
-  return { result };
+  const end = performance.now();
+  return { result, time: end - start };
 }
 
 async function runCode(code, timeout, admin) {
   try {
     const context = admin ? false : makeContext();
-    const { result } = await asScriptWeirdName(code, timeout, context);
-    return util.inspect(result, {
+    let { result, time } = await asScriptWeirdName(code, timeout, context);
+    result = util.inspect(result, {
       maxArrayLength: 20,
       customInspect: false,
       colors: false,
     });
+    return { result, time };
   } catch (err) {
     try {
-      return err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
+      var result = err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
     } catch (e) {
-      return 'Error: fuckery happened';
+      result = 'Error: fuckery happened';
     }
+    return { result, time: 0 };
   }
 }
 

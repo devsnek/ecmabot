@@ -27,18 +27,18 @@ const highlight = (t) => {
   }
 };
 
-async function respond(message, content) {
+async function respond(message, result, time) {
   header(message);
-  const wrapped = `${message.author},\n\`\`\`js\n${content}\n\`\`\``;
+  const wrapped = `${message.author}, *Executed in ${time}ms*\n\`\`\`js\n${result}\n\`\`\``;
   if (wrapped.length >= 2000) {
     const key = await request.post('https://hastebin.com/documents')
-      .send(content)
+      .send(result)
       .then((r) => r.body.key);
     await message.reply(`**Output was too long and was uploaded to https://hastebin.com/${key}.js**`);
     console.log('hastebin', `https://hastebin.org/${key}.js`);
   } else {
     await message.channel.send(wrapped);
-    console.log(highlight(content));
+    console.log(highlight(result));
   }
   header(message);
 }
@@ -55,8 +55,8 @@ client.on('message', async (message) => {
   header(message, highlight(content));
 
   try {
-    const out = await evil(content, config.admins.includes(message.author.id));
-    await respond(message, out);
+    const { result, time } = await evil(content, config.admins.includes(message.author.id));
+    await respond(message, result, time);
   } catch (err) {
     header(message, err);
   }

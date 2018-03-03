@@ -7,16 +7,14 @@ export default function evil(code, admin) {
     const child = childProcess.fork('./evil_child.js', [code, timeout, admin], {
       silent: true,
     });
-    let res = '';
-    child.once('exit', () => {
-      resolve(res);
-    });
     child.once('error', (err) => {
       reject(err);
     });
-    child.on('message', (data) => { res += data; });
+    child.once('message', ({ result, time }) => {
+      resolve({ result, time });
+    });
     setTimeout(() => {
-      res = 'Error: Script execution timed out.';
+      resolve({ result: 'Error: Script execution timed out.', time: 0 });
       child.kill();
     }, timeout + 100);
   });
