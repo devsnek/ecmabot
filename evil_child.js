@@ -6,7 +6,6 @@ const { performance } = require('perf_hooks');
 
 function makeContext() {
   const context = createContext(Object.create(null), {
-    allowCodeGenerationFromStrings: false,
     origin: 'vm://',
   });
   return context;
@@ -39,15 +38,14 @@ async function runCode(code, timeout, admin) {
   } catch (err) {
     try {
       var result = err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
-    } catch (e) {
+    } catch {
       result = 'Error: fuckery happened';
     }
-    return { result, time: 0 };
+    return { result, time: timeout };
   }
 }
 
-const [code, timeout, admin] = process.argv.slice(2);
-
-runCode(code, parseInt(timeout), JSON.parse(admin)).then((out) => {
+process.on('message', async ({ code, timeout, admin }) => {
+  const out = await runCode(code, timeout, admin);
   process.send(out);
 });

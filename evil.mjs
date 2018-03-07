@@ -4,9 +4,10 @@ const timeout = 1000;
 
 export default function evil(code, admin) {
   return new Promise((resolve, reject) => {
-    const child = childProcess.fork('./evil_child.js', [code, timeout, admin], {
+    const child = childProcess.fork('./evil_child.js', {
       silent: true,
     });
+    child.send({ code, admin, timeout });
     child.once('error', (err) => {
       reject(err);
     });

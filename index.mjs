@@ -22,7 +22,7 @@ const header = (m, x) => {
 const highlight = (t) => {
   try {
     return cardinal.highlight(t);
-  } catch (err) {
+  } catch {
     return t;
   }
 };
