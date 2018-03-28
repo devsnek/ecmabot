@@ -6,6 +6,7 @@ export default function evil(code, admin) {
   return new Promise((resolve, reject) => {
     const child = childProcess.fork('./evil_child.js', {
       silent: true,
+      execArgv: [...process.execArgv, '--expose-internals'],
     });
     child.send({ code, admin, timeout });
     child.once('error', (err) => {

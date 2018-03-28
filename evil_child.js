@@ -4,6 +4,7 @@ const { createContext, Module } = require('vm');
 const util = require('util');
 const { performance } = require('perf_hooks');
 const v8 = require('v8-debug');
+const { decorateErrorStack } = require('internal/util');
 
 function makeContext(admin) {
   const top = Object.create(null);
@@ -47,6 +48,7 @@ function inspect(val) {
 }
 
 async function runCode(code, timeout, admin) {
+  const start = performance.now();
   try {
     const context = makeContext(admin);
     let { result, time, namespace } = await asModuleWeirdName(code, timeout, context);
@@ -58,11 +60,12 @@ async function runCode(code, timeout, admin) {
     return { result, time };
   } catch (err) {
     try {
+      decorateErrorStack(err);
       var result = err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
     } catch {
       result = 'Error: fuckery happened';
     }
-    return { result, time: timeout };
+    return { result, time: performance.now() - start };
   }
 }
 
