@@ -1,39 +1,59 @@
 'use strict';
 
-const { createContext, Script } = require('vm');
+const { createContext, Module } = require('vm');
 const util = require('util');
 const { performance } = require('perf_hooks');
+const v8 = require('v8-debug');
 
-function makeContext() {
-  const context = createContext(Object.create(null), {
+function makeContext(admin) {
+  const top = Object.create(null);
+  if (admin) {
+    top.v8 = v8;
+    top.require = require;
+    top.module = module;
+    top.global = global;
+  }
+  const context = createContext(top, {
     origin: 'vm://',
   });
   return context;
 }
 
-function asScriptWeirdName(code, timeout, context) {
-  const s = new Script(code, {
-    displayErrors: true,
-    filename: 'code.js',
-  });
-  const opt = { timeout };
+async function asModuleWeirdName(code, timeout, context) {
+  const m = new Module(code, { context, url: 'vm:ecmabot' });
+  await m.link(() => { throw new Error('no imports'); });
+  m.instantiate();
   const start = performance.now();
-  const result = context ?
-    s.runInContext(context, opt) :
-    s.runInThisContext(opt);
+  const { result } = await m.evaluate({ timeout });
   const end = performance.now();
-  return { result, time: end - start };
+  return {
+    result,
+    namespace: m.namespace,
+    time: end - start,
+  };
 }
 
-async function runCode(code, timeout, admin) {
+function inspect(val) {
   try {
-    const context = admin ? false : makeContext();
-    let { result, time } = await asScriptWeirdName(code, timeout, context);
-    result = util.inspect(result, {
+    return util.inspect(val, {
       maxArrayLength: 20,
       customInspect: false,
       colors: false,
     });
+  } catch {
+    return '';
+  }
+}
+
+async function runCode(code, timeout, admin) {
+  try {
+    const context = makeContext(admin);
+    let { result, time, namespace } = await asModuleWeirdName(code, timeout, context);
+    result = inspect(result);
+    if (namespace !== undefined) {
+      namespace = inspect(namespace);
+      result = `${result}\n-- namespace --\n${namespace}`;
+    }
     return { result, time };
   } catch (err) {
     try {
