@@ -40,7 +40,8 @@ function inspect(val) {
       maxArrayLength: 20,
       customInspect: false,
       colors: false,
-      breakLength: 2,
+      breakLength: 60,
+      compact: false,
     });
   } catch {
     return '';
