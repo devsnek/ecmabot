@@ -62,7 +62,7 @@ async function runCode(code, timeout, admin) {
   } catch (err) {
     try {
       decorateErrorStack(err);
-      var result = err.stack.split(/at as(Script|Module)WeirdName/)[0].trim();
+      var result = err.stack.split(/at Module\.evaluate/)[0].trim();
     } catch {
       result = 'Error: fuckery happened';
     }
