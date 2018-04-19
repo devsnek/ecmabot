@@ -5,7 +5,6 @@
   "main": "index.mjs",
   "dependencies": {
     "cardinal": "^1.0.0",
-    "debug": "github:devsnek/v8-debug",
     "discord.js": "^11.3.0",
     "snekfetch": "^3.6.4",
     "v8-debug": "github:devsnek/v8-debug"
