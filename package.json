@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.mjs",
   "dependencies": {
-    "cardinal": "^2.0.1",
+    "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.3.0",
-    "snekfetch": "^3.6.4"
+    "snekfetch": "^4.0.0-beta.1"
   },
   "scripts": {
     "start": "node-dev --experimental-vm-modules --experimental-modules --harmony_import_meta index.mjs"
