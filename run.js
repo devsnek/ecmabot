@@ -30,6 +30,10 @@ function run({ environment, code }) {
       data += chunk;
     });
 
+    proc.stderr.on('data', (c) => {
+      console.log(name, c.toString());
+    });
+
     proc.on('error', (e) => {
       clearTimeout(timer);
       console.error(e);
