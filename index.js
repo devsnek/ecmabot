@@ -1,10 +1,12 @@
+'use strict';
+
 /* eslint-disable no-console */
 
-import Discord from 'discord.js';
-import evil from './evil';
-import config from './config';
-import request from 'snekfetch';
-import cardinal from 'cardinal';
+const Discord = require('discord.js');
+const config = require('./config');
+const request = require('snekfetch');
+const cardinal = require('cardinal');
+const run = require('./run');
 
 const client = new Discord.Client();
 
@@ -22,14 +24,14 @@ const header = (m, x) => {
 const highlight = (t) => {
   try {
     return cardinal.highlight(t);
-  } catch {
+  } catch (err) {
     return t;
   }
 };
 
-async function respond(message, result, time) {
+async function respond(message, result) {
   header(message);
-  const wrapped = `${message.author}, *Executed in ${time}ms*\n\`\`\`js\n${result}\n\`\`\``;
+  const wrapped = `${message.author}\n\`\`\`js\n${result}\n\`\`\``;
   if (wrapped.length >= 2000) {
     const key = await request.post('https://hastebin.com/documents')
       .send(result)
@@ -55,10 +57,11 @@ client.on('message', async (message) => {
   header(message, highlight(content));
 
   try {
-    const { result, time } = await evil(content, config.admins.includes(message.author.id));
-    await respond(message, result, time);
+    const result = await run({ environment: 'node-cjs', code: content });
+    await respond(message, result);
   } catch (err) {
     header(message, err);
+    await respond(message, err.message);
   }
 });
 

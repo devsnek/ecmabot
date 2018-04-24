@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.mjs",
   "dependencies": {
-    "cardinal": "^1.0.0",
+    "cardinal": "^2.0.1",
     "discord.js": "^11.3.0",
-    "snekfetch": "^3.6.4",
-    "v8-debug": "github:devsnek/v8-debug"
+    "snekfetch": "^3.6.4"
   },
   "scripts": {
     "start": "node-dev --experimental-vm-modules --experimental-modules --harmony_import_meta index.mjs"
