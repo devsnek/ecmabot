@@ -8,7 +8,7 @@ module.exports = async (message) => {
     .split(' ')
     .map((x) => x.trim().toLowerCase())
     .join('-')
-    .replace(/[^a-zA-Z0-9]+g/, '-')}`;
+    .replace(/[^a-zA-Z0-9]+/g, '-')}`;
 
   const res = await request.get(url);
   if (!res.ok) {

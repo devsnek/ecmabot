@@ -6,7 +6,7 @@ const request = require('snekfetch');
 
 const CONTAINER = 'devsnek/js-eval';
 
-const ARGS = ['run', '--rm', '-i', '--net=none'];
+const ARGS = ['run', '--rm', '-i', '--net=none', '-m=8m', '--cpus=0.5'];
 
 const TIMEOUT = 6000;
 

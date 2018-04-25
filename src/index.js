@@ -16,7 +16,7 @@ client.on('message', async (message) => {
   const prefix = client.user.toString();
   if (!message.content.startsWith(prefix))
     return;
-  const content = message.content.replace(client.user.toString(), '').trim();
+  const content = message.content.replace(prefix, '').trim();
   const [command, ...args] = content.split(' ');
   message.content = args.join(' ');
   if (command in commands)
