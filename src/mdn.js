@@ -40,7 +40,7 @@ module.exports = async (message) => {
     return;
   }
 
-  let response = `${message.author}, \n**${title.trim()}** (${url})\n\n${text.trim()}`;
+  let response = `${message.author}, \n**${title.trim()}** (<${url}>)\n\n${text.trim()}`;
   if (response.length > 2000)
     response = `${response.slice(0, 1995).trim()}…`;
   await message.channel.send(response);
