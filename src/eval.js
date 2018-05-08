@@ -78,8 +78,9 @@ function run({ environment, code }) {
 module.exports = async (message) => {
   let { content } = message;
 
-  if (cblockre.test(content))
+  if (cblockre.test(content)) {
     content = content.replace(cblockre, '').trim();
+  }
 
   header(message, content);
 

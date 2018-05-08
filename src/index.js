@@ -13,14 +13,16 @@ const commands = {
 };
 
 client.on('message', async (message) => {
-  const prefix = client.user.toString();
-  if (!message.content.startsWith(prefix))
+  const prefix = `${message.guild ? message.guild.me : client.user}`;
+  if (!message.content.startsWith(prefix)) {
     return;
+  }
   const content = message.content.replace(prefix, '').trim();
   const [command, ...args] = content.split(' ');
   message.content = args.join(' ');
-  if (command in commands)
+  if (command in commands) {
     commands[command](message);
+  }
 });
 
 client.on('error', (err) => {

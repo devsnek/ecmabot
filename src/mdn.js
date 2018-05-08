@@ -19,8 +19,9 @@ module.exports = async (message) => {
   const $ = cheerio.load(res.raw.toString());
   const title = $('head title').text()
     .replace(/\s*-\s*(\w+\s*\w*)\s*\|\s*MDN/gi, (m, type) => {
-      if (type === 'Web APIs')
+      if (type === 'Web APIs') {
         return 'DOM';
+      }
       return '';
     });
 
@@ -41,7 +42,8 @@ module.exports = async (message) => {
   }
 
   let response = `${message.author}, \n**${title.trim()}** (<${url}>)\n\n${text.trim()}`;
-  if (response.length > 2000)
+  if (response.length > 2000) {
     response = `${response.slice(0, 1995).trim()}…`;
+  }
   await message.channel.send(response);
 };
