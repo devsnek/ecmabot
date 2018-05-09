@@ -6,6 +6,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.3.0",
+    "docker-js-eval": "0.0.2",
     "snekfetch": "^4.0.0-beta.1"
   },
   "scripts": {

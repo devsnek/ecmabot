@@ -1,12 +1,7 @@
 'use strict';
 
-const cp = require('child_process');
-const crypto = require('crypto');
 const request = require('snekfetch');
-
-const CONTAINER = 'devsnek/js-eval';
-
-const ARGS = ['run', '--rm', '-i', '--net=none', '--cpus=0.5'];
+const run = require('docker-js-eval');
 
 const TIMEOUT = 6000;
 
@@ -37,44 +32,6 @@ async function respond(message, result) {
   header(message);
 }
 
-function run({ environment, code }) {
-  return new Promise((resolve, reject) => {
-    const name = `jseval-${crypto.randomBytes(8).toString('hex')}`;
-
-    const proc = cp.spawn('docker', ARGS.concat([`--name=${name}`, CONTAINER]));
-    proc.stdin.write(`${JSON.stringify({ environment, code })}\n`);
-    proc.stdin.end();
-
-    const kill = () => {
-      cp.exec(`docker kill ${name}`, () => {
-        reject(new Error('Error: Script execution timed out.'));
-      });
-    };
-
-    const timer = setTimeout(kill, TIMEOUT);
-
-    let data = '';
-    proc.stdout.on('data', (chunk) => {
-      data += chunk;
-    });
-
-    proc.stderr.on('data', (c) => {
-      console.log(name, c.toString());
-    });
-
-    proc.on('error', (e) => {
-      clearTimeout(timer);
-      console.error(e);
-      reject(new Error('Error: Unknown error.'));
-    });
-
-    proc.on('exit', () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-  });
-}
-
 module.exports = async (message) => {
   let { content } = message;
 
@@ -85,7 +42,11 @@ module.exports = async (message) => {
   header(message, content);
 
   try {
-    const result = await run({ environment: 'node-cjs', code: content });
+    const result = await run(content, 'node-cjs', {
+      cpus: 0.5,
+      net: 'none',
+      timeout: TIMEOUT,
+    });
     await respond(message, result);
   } catch (err) {
     header(message, err);
