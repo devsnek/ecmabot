@@ -18,10 +18,21 @@ client.on('message', async (message) => {
     return;
   }
   const content = message.content.replace(prefix, '').trim();
-  const [command, ...args] = content.split(' ');
-  message.content = args.join(' ');
-  if (command in commands) {
-    commands[command](message);
+  if (/^```js/.test(content)) {
+    message.content = content;
+    commands.eval(message);
+  } else {
+    const parts = content.split(' ');
+    let command = parts.shift();
+    if (/\n/.test(command)) {
+      const evil = command.split(/\n/);
+      command = evil[0]; // eslint-disable-line prefer-destructuring
+      parts.unshift(evil[1]);
+    }
+    message.content = parts.join(' ');
+    if (command in commands) {
+      commands[command](message);
+    }
   }
 });
 
