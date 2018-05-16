@@ -31,6 +31,7 @@ client.on('message', async (message) => {
     }
     message.content = parts.join(' ');
     if (command in commands) {
+      client.api.channels(message.channel.id).typing.post();
       commands[command](message);
     }
   }
