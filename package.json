@@ -7,10 +7,7 @@
     "cheerio": "^1.0.0-rc.2",
     "discord.js": "github:discordjs/discord.js",
     "docker-js-eval": "github:devsnek/docker-js-eval",
-    "snekfetch": "^4.0.0-beta.1"
-  },
-  "scripts": {
-    "start": "node-dev --experimental-vm-modules --experimental-modules --harmony_import_meta index.mjs"
+    "snekfetch": "^4.0.4"
   },
   "repository": {
     "type": "git",
