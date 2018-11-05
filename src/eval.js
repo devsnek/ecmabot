@@ -46,6 +46,7 @@ module.exports = async (message) => {
       cpus: 0.5,
       net: 'none',
       timeout: TIMEOUT,
+      name: message.id,
     });
     await respond(message, result);
   } catch (err) {
