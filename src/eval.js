@@ -8,7 +8,7 @@ const TIMEOUT = 6000;
 const cblockre = /(^```js)|(```$)/g;
 
 const header = (m, x) => {
-  const H = `========== ${m.id} ==========`;
+  const H = `========== ${m.author.id} ${m.channel.id} ${m.id} ==========`;
   console.log(H);
   if (x) {
     console.log(x);
