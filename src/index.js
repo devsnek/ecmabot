@@ -13,8 +13,8 @@ const commands = {
 };
 
 client.on('message', async (message) => {
-  const prefix = `${message.guild ? message.guild.me : client.user}`;
-  if (!message.content.startsWith(prefix)) {
+  const prefix = new RegExp(`^<@!?${client.user.id}>`);
+  if (!prefix.test(message.content)) {
     return;
   }
   const content = message.content.replace(prefix, '').trim();
